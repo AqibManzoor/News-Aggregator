@@ -14,17 +14,27 @@
                 <span>🗞️</span>
                 <span>{{ config('app.name', 'News Aggregator') }}</span>
             </a>
-            <form method="POST" action="{{ route('articles.fetch') }}" class="inline" onsubmit="showFetchingToast()">
+            <form method="POST" action="{{ route('articles.fetch') }}" class="inline" onsubmit="handleFetchSubmit(this)">
                 @csrf
-                <button class="px-3 py-2 bg-white/10 border border-white/20 backdrop-blur rounded hover:bg-white/20 transition" title="Fetch latest from providers">Latest Articles</button>
+                <button type="submit" class="px-4 py-2 bg-white/10 border border-white/20 backdrop-blur rounded hover:bg-white/20 transition duration-200 flex items-center gap-2" title="Get the latest news from all sources">
+                    <span class="fetch-text">🔄 Refresh News</span>
+                    <span class="fetch-loading hidden">⏳ Fetching...</span>
+                </button>
             </form>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         @if (session('status'))
-            <div class="mb-4 p-3 rounded bg-green-50 text-green-700 border border-green-200">
-                {{ session('status') }}
+            <div class="mb-6 p-4 rounded-lg bg-green-50 text-green-800 border border-green-200 shadow-sm flex items-center gap-3">
+                <div class="flex-shrink-0">
+                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    {{ session('status') }}
+                </div>
             </div>
         @endif
         {{ $slot ?? '' }}
@@ -54,12 +64,19 @@
 .prose p{margin-bottom:0.5rem}
 </style>
 <script>
-function showFetchingToast(){
-  var t=document.getElementById('toast');
-  if(!t) return true;
-  t.classList.remove('hidden');
-  setTimeout(function(){ t.classList.add('hidden'); }, 2500);
-  return true;
+function handleFetchSubmit(form) {
+  const button = form.querySelector('button[type="submit"]');
+  const textSpan = button.querySelector('.fetch-text');
+  const loadingSpan = button.querySelector('.fetch-loading');
+  
+  // Show loading state
+  textSpan.classList.add('hidden');
+  loadingSpan.classList.remove('hidden');
+  button.disabled = true;
+  button.classList.add('opacity-75', 'cursor-not-allowed');
+  
+  return true; // Allow form submission
 }
+</script>
 </script>
 </html>

@@ -8,7 +8,7 @@
       <div class="p-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900">Filters</h2>
-          <button type="button" onclick="resetFiltersAndSubmit()" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium" title="Reset all filters to defaults">Reset Filters</button>
+          <a href="{{ route('articles.index', ['clear_filters' => 1]) }}" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium" title="Clear all filters">Clear All</a>
         </div>
       </div>
 
@@ -262,26 +262,6 @@
 
 @push('scripts')
 <script>
-function resetFiltersAndSubmit() {
-  // Clear all form inputs
-  const form = document.querySelector('form');
-  const inputs = form.querySelectorAll('input, select');
-  
-  inputs.forEach(input => {
-    if (input.type === 'checkbox') {
-      input.checked = false;
-    } else if (input.type === 'text' || input.type === 'date') {
-      input.value = '';
-    } else if (input.tagName === 'SELECT') {
-      input.selectedIndex = 0;
-    }
-  });
-  
-  // Submit the form to apply the cleared filters (no fetch triggered)
-  form.action = form.action; // keep same route
-  form.submit();
-}
-
 // Toggle collapsible sections
 function toggleSection(sectionId) {
   const section = document.getElementById(sectionId);
@@ -375,10 +355,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Auto-expand sections with active filters
   const activeFilters = {
-    'dateRange': {{ (!empty($filters['from']) || !empty($filters['to'])) ? 'true' : 'false' }},
-    'sources': {{ count($filters['sources'] ?? []) > 0 ? 'true' : 'false' }},
-    'categories': {{ count($filters['categories'] ?? []) > 0 ? 'true' : 'false' }},
-    'authors': {{ count($filters['authors'] ?? []) > 0 ? 'true' : 'false' }}
+    dateRange: {{ (!empty($filters['from']) || !empty($filters['to'])) ? 'true' : 'false' }},
+    sources: {{ count($filters['sources'] ?? []) > 0 ? 'true' : 'false' }},
+    categories: {{ count($filters['categories'] ?? []) > 0 ? 'true' : 'false' }},
+    authors: {{ count($filters['authors'] ?? []) > 0 ? 'true' : 'false' }}
   };
   
   Object.keys(activeFilters).forEach(sectionId => {

@@ -163,6 +163,22 @@ class ArticleController extends Controller
     {
         $params = array_filter($request->only(['q','category','from','to','page','pageSize']), fn($v) => $v !== null && $v !== '');
         $result = $aggregator->fetchAndStore($params);
-        return redirect()->back()->with('status', "Fetched {$result['fetched']}, Inserted {$result['inserted']}, Updated {$result['updated']}");
+        
+        // Create professional user-friendly message
+        $totalNew = $result['inserted'];
+        $totalUpdated = $result['updated'];
+        $totalProcessed = $totalNew + $totalUpdated;
+        
+        if ($totalProcessed === 0) {
+            $message = "✓ Your news feed is up to date. No new articles found.";
+        } elseif ($totalNew > 0 && $totalUpdated === 0) {
+            $message = "✓ News updated successfully! {$totalNew} new " . ($totalNew === 1 ? 'article' : 'articles') . " added to your feed.";
+        } elseif ($totalNew === 0 && $totalUpdated > 0) {
+            $message = "✓ News refreshed successfully! {$totalUpdated} " . ($totalUpdated === 1 ? 'article' : 'articles') . " updated.";
+        } else {
+            $message = "✓ News updated successfully! {$totalNew} new and {$totalUpdated} updated articles.";
+        }
+        
+        return redirect()->back()->with('status', $message);
     }
 }
