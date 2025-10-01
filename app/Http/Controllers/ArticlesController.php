@@ -11,7 +11,6 @@ class ArticlesController extends Controller
 {
     public function index(Request $request)
     {
-        dd('Use API endpoint /api/articles for fetching articles with filters.');
         $validated = $request->validate([
             'q' => ['nullable','string'],
             'from' => ['nullable','date'],
