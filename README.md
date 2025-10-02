@@ -6,9 +6,16 @@ Laravel-based news aggregation system that fetches articles from multiple source
 
 ## 🎥 Demo
 
-<video src="public/vedios/demo.webm" controls preload="metadata" width="800" style="border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);"></video>
+<video controls preload="metadata" width="800" style="border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+   <source src="https://github.com/AqibManzoor/News-Aggregator/raw/master/public/vedios/demo.webm" type="video/webm" />
+   <source src="public/vedios/demo.webm" type="video/webm" />
+   Your browser doesn’t support embedded video. Use the direct link below.
+  
+</video>
 
-> Tip: If the video doesn’t autoplay on GitHub, click play or open it in a new tab.
+<p><a href="https://github.com/AqibManzoor/News-Aggregator/raw/master/public/vedios/demo.webm">Watch the demo (direct link)</a></p>
+
+> Tip: If the player doesn’t appear on GitHub, click the direct link above. For maximum compatibility, MP4 (H.264) is recommended over WebM on some browsers.
 
 ## 🚀 Quick Start
 
