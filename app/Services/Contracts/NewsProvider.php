@@ -2,16 +2,17 @@
 
 namespace App\Services\Contracts;
 
+use App\Services\DTO\UnifiedArticle;
 use Illuminate\Support\Collection;
 
 interface NewsProvider
 {
     /**
      * Fetch latest articles, optionally filtered by keyword or category.
-     * Should return a collection of UnifiedArticle DTO arrays.
+     * Returns a collection of UnifiedArticle DTO arrays.
      *
      * @param array{q?:string,category?:string,from?:string,to?:string,language?:string,page?:int,pageSize?:int} $params
-     * @return Collection<int,array>
+     * @return Collection<int,array> Collection of UnifiedArticle::toArray() results
      */
     public function fetch(array $params = []): Collection;
 

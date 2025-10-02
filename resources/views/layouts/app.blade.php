@@ -17,7 +17,7 @@
             <form method="POST" action="{{ route('articles.fetch') }}" class="inline" onsubmit="handleFetchSubmit(this)">
                 @csrf
                 <button type="submit" class="px-4 py-2 bg-white/10 border border-white/20 backdrop-blur rounded hover:bg-white/20 transition duration-200 flex items-center gap-2" title="Get the latest news from all sources">
-                    <span class="fetch-text">🔄 Refresh News</span>
+                    <span class="fetch-text">🔄 Latest News</span>
                     <span class="fetch-loading hidden">⏳ Fetching...</span>
                 </button>
             </form>
@@ -49,10 +49,13 @@
             </div>
             <div class="flex items-center gap-3">
                 <a href="{{ route('articles.index') }}" class="hover:text-indigo-700">Home</a>
-                <a href="https://github.com" target="_blank" class="hover:text-indigo-700">GitHub</a>
+                <a href="https://github.com/AqibManzoor/News-Aggregator" target="_blank" class="hover:text-indigo-700">GitHub</a>
             </div>
         </div>
     </footer>
+    <button id="backToFiltersBtn" onclick="scrollToFilters()" class="hidden fixed bottom-20 right-6 z-40 px-4 py-2 rounded-full shadow bg-indigo-600 text-white text-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        Back to Filters
+    </button>
     <div id="toast" class="fixed top-20 right-6 z-50 hidden">
         <div class="px-4 py-3 rounded-md shadow bg-indigo-600 text-white text-sm">Fetching latest articles...</div>
     </div>
@@ -60,7 +63,7 @@
     @stack('styles')
 </body>
 <style>
-/* Basic prose for article content */
+
 .prose p{margin-bottom:0.5rem}
 </style>
 <script>
@@ -75,7 +78,11 @@ function handleFetchSubmit(form) {
   button.disabled = true;
   button.classList.add('opacity-75', 'cursor-not-allowed');
   
-  return true; // Allow form submission
+  return true;
+}
+function scrollToFilters(){
+  if (typeof window.scrollToFilters === 'function') { window.scrollToFilters(); return; }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </script>

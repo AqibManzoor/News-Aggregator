@@ -1,5 +1,7 @@
 # News Aggregator Backend
 
+![Home Page Screenshot](public/images/home-page.png)
+
 A professional Laravel-based news aggregation system that fetches articles from multiple news sources and provides a comprehensive REST API for frontend applications.
 
 ## 🚀 Quick Start (Zero Setup Required)

@@ -3,7 +3,7 @@
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
   <aside class="lg:col-span-1">
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-6 max-h-[calc(100vh-2rem)] overflow-y-auto">
       <!-- Header -->
       <div class="p-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
@@ -157,7 +157,6 @@
   </aside>
 
   <section class="lg:col-span-3 space-y-6">
-    <!-- Header with Results Count -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
       <div class="flex items-center justify-between">
         <div>
@@ -327,9 +326,8 @@ function updateFilterCounts() {
   }
 }
 
-// Add smooth scrolling for better UX
+
 document.addEventListener('DOMContentLoaded', function() {
-  // Add loading state to form submission
   const form = document.querySelector('form');
   if (form) {
     form.addEventListener('submit', function() {

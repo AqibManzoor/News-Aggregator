@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleIndexRequest;
 use App\Models\Article;
-use App\Services\CacheService;
+use App\Http\Resources\ArticleResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function __construct(
-        private CacheService $cacheService
-    ) {}
+    public function __construct() {}
 
     /**
      * Display a listing of articles with filtering and search capabilities.
@@ -24,11 +22,7 @@ class ArticleController extends Controller
         $page = $request->input('page', 1);
         $perPage = $request->validated('per_page', 20);
 
-        // Try to get from cache first
-        $cachedData = $this->cacheService->getArticles($filters, $page, $perPage);
-        if ($cachedData) {
-            return response()->json($cachedData);
-        }
+        // No caching in API layer; compute fresh response
 
         $query = Article::query()->with(['source:id,name,slug', 'categories:id,name,slug', 'authors:id,name']);
 
@@ -101,8 +95,8 @@ class ArticleController extends Controller
         // Pagination
         $articles = $query->paginate($perPage);
 
-        $response = [
-            'data' => $articles->items(),
+        return response()->json([
+            'data' => ArticleResource::collection($articles->items()),
             'meta' => [
                 'current_page' => $articles->currentPage(),
                 'last_page' => $articles->lastPage(),
@@ -117,12 +111,7 @@ class ArticleController extends Controller
                 'prev' => $articles->previousPageUrl(),
                 'next' => $articles->nextPageUrl(),
             ],
-        ];
-
-        // Cache the response
-        $this->cacheService->putArticles($filters, $page, $perPage, $response);
-
-        return response()->json($response);
+        ]);
     }
 
     /**
@@ -130,38 +119,9 @@ class ArticleController extends Controller
      */
     public function show(Article $article): JsonResponse
     {
-        $article->load(['source:id,name,slug', 'categories:id,name,slug', 'authors:id,name']);
-        
-        return response()->json([
-            'data' => $article
-        ]);
+        $article->load(['source:id,name,slug,website_url', 'categories:id,name,slug', 'authors:id,name']);
+        return response()->json(['data' => new ArticleResource($article)]);
     }
 
-    /**
-     * Get article statistics.
-     */
-    public function stats(): JsonResponse
-    {
-        // Try to get from cache first
-        $cachedStats = $this->cacheService->getStats();
-        if ($cachedStats) {
-            return response()->json($cachedStats);
-        }
 
-        $stats = [
-            'total_articles' => Article::count(),
-            'articles_today' => Article::whereDate('published_at', today())->count(),
-            'articles_this_week' => Article::whereBetween('published_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
-            'sources_count' => \App\Models\Source::count(),
-            'categories_count' => \App\Models\Category::count(),
-            'authors_count' => \App\Models\Author::count(),
-        ];
-
-        $response = ['data' => $stats];
-        
-        // Cache the response
-        $this->cacheService->putStats($response);
-
-        return response()->json($response);
-    }
 }

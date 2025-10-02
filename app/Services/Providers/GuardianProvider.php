@@ -3,6 +3,7 @@
 namespace App\Services\Providers;
 
 use App\Services\Contracts\NewsProvider;
+use App\Services\DTO\UnifiedArticle;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
@@ -34,20 +35,24 @@ class GuardianProvider implements NewsProvider
 
         return collect($results)->map(function ($r) {
             $fields = $r['fields'] ?? [];
-            return [
-                'title' => $r['webTitle'] ?? '',
-                'summary' => $fields['trailText'] ?? null,
-                'content' => $fields['bodyText'] ?? null,
-                'url' => $r['webUrl'] ?? '',
-                'image_url' => $fields['thumbnail'] ?? null,
-                'published_at' => $r['webPublicationDate'] ?? null,
-                'language' => null,
-                'source_name' => 'The Guardian',
-                'source_external_id' => 'guardian',
-                'categories' => array_filter([(string) ($r['sectionName'] ?? '')]),
-                'authors' => [],
-                'external_id' => $r['id'] ?? null,
-            ];
+            
+            // Create UnifiedArticle DTO for standardized data structure
+            $unifiedArticle = new UnifiedArticle(
+                title: $r['webTitle'] ?? '',
+                summary: $fields['trailText'] ?? null,
+                content: $fields['bodyText'] ?? null,
+                url: $r['webUrl'] ?? '',
+                imageUrl: $fields['thumbnail'] ?? null,
+                publishedAt: $r['webPublicationDate'] ?? null,
+                language: 'en', // Guardian is primarily English
+                sourceName: 'The Guardian',
+                sourceExternalId: 'guardian',
+                categories: array_filter([(string) ($r['sectionName'] ?? '')]),
+                authors: [], // Guardian API doesn't provide author info in basic search
+                articleExternalId: $r['id'] ?? null
+            );
+            
+            return $unifiedArticle->toArray();
         });
     }
 }

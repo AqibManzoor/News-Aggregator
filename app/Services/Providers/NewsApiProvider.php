@@ -3,8 +3,10 @@
 namespace App\Services\Providers;
 
 use App\Services\Contracts\NewsProvider;
+use App\Services\DTO\UnifiedArticle;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class NewsApiProvider implements NewsProvider
 {
@@ -32,7 +34,7 @@ class NewsApiProvider implements NewsProvider
 
         $resp = Http::retry(2, 200)->get($baseUrl, $query);
         if (!$resp->ok()) {
-            \Log::warning('NewsAPI request failed', [
+            Log::warning('NewsAPI request failed', [
                 'status' => $resp->status(),
                 'body' => $resp->body()
             ]);
@@ -44,20 +46,24 @@ class NewsApiProvider implements NewsProvider
 
         return collect($articles)->map(function ($a) {
             $source = $a['source'] ?? [];
-            return [
-                'title' => $a['title'] ?? '',
-                'summary' => $a['description'] ?? null,
-                'content' => $a['content'] ?? null,
-                'url' => $a['url'] ?? '',
-                'image_url' => $a['urlToImage'] ?? null,
-                'published_at' => $a['publishedAt'] ?? null,
-                'language' => $a['language'] ?? 'en',
-                'source_name' => $source['name'] ?? 'NewsAPI',
-                'source_external_id' => $source['id'] ?? null,
-                'categories' => array_filter([(string) ($a['category'] ?? 'general')]),
-                'authors' => !empty($a['author']) ? [trim((string) $a['author'])] : [],
-                'external_id' => $a['url'] ?? null,
-            ];
+            
+            // Create UnifiedArticle DTO for standardized data structure
+            $unifiedArticle = new UnifiedArticle(
+                title: $a['title'] ?? '',
+                summary: $a['description'] ?? null,
+                content: $a['content'] ?? null,
+                url: $a['url'] ?? '',
+                imageUrl: $a['urlToImage'] ?? null,
+                publishedAt: $a['publishedAt'] ?? null,
+                language: $a['language'] ?? 'en',
+                sourceName: $source['name'] ?? 'NewsAPI',
+                sourceExternalId: $source['id'] ?? null,
+                categories: array_filter([(string) ($a['category'] ?? 'general')]),
+                authors: !empty($a['author']) ? [trim((string) $a['author'])] : [],
+                articleExternalId: $a['url'] ?? null
+            );
+            
+            return $unifiedArticle->toArray();
         });
     }
 }
