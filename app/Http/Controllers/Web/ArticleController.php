@@ -81,7 +81,7 @@ class ArticleController extends Controller
         $articles = $query->orderBy($sort, $order)->paginate($perPage);
 
         // Add filter data to pagination links
-        if ($request->isMethod('post') || session()->has('article_filters')) {
+        if (!empty($filters)) {
             $articles->appends(['filtered' => 1]);
         }
 
@@ -133,17 +133,25 @@ class ArticleController extends Controller
 
         // For GET requests, check if we should clear filters or use session data
         if ($request->has('clear_filters')) {
+            // Clear session-stored filters
             session()->forget('article_filters');
+            // Clear persisted cookie preferences so filters don't re-apply on pagination
+            Cookie::queue(Cookie::forget('article_prefs'));
             return [];
         }
 
         // Use session filters if available
         $filters = session('article_filters', []);
 
-        // If no filters in session, try to hydrate from cookie preferences
+        // If no filters in session, try to hydrate from cookie preferences.
+        // Only hydrate if the cookie exists AND this isn't just a pagination click without prior filters.
+        // This prevents cleared filters from reappearing when navigating pages.
         if (empty($filters)) {
             $cookie = $request->cookie('article_prefs');
-            if ($cookie) {
+            // If request contains page param but no prior filters in session and no explicit "filtered" flag,
+            // skip cookie hydration to avoid surprising re-application of old filters.
+            $isPaginationOnly = $request->has('page') && !$request->has('filtered');
+            if ($cookie && !$isPaginationOnly) {
                 $prefs = json_decode($cookie, true) ?: [];
                 if (!empty($prefs)) {
                     $filters = array_merge($filters, array_filter([

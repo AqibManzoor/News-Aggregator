@@ -4,6 +4,12 @@
 
 Laravel-based news aggregation system that fetches articles from multiple sources and exposes a clean REST API and a simple web UI.
 
+## 🎥 Demo
+
+<video src="public/vedios/demo.webm" controls preload="metadata" width="800" style="border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);"></video>
+
+> Tip: If the video doesn’t autoplay on GitHub, click play or open it in a new tab.
+
 ## 🚀 Quick Start
 
 ### Manual Setup
