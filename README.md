@@ -1,10 +1,10 @@
 # News Aggregator Backend
 
-![Home Page Screenshot](public/images/home-page.png)
+![Home Page](public/images/home-page.png)
 
-A professional Laravel-based news aggregation system that fetches articles from multiple news sources and provides a comprehensive REST API for frontend applications.
+Laravel-based news aggregation system that fetches articles from multiple sources and exposes a clean REST API and a simple web UI.
 
-## 🚀 Quick Start (Zero Setup Required)
+## 🚀 Quick Start
 
 ### Manual Setup
 ```bash
@@ -16,16 +16,16 @@ cd news-aggregator
 chmod +x setup.sh
 ./setup.sh
 
-# The application will be available at http://localhost:8000
+# App will be available at http://localhost:8000
 ```
 
 ## 📋 Features
 
-- **Multi-Source News Aggregation**: Fetches articles from NewsAPI, The Guardian, and New York Times
-- **Comprehensive API**: RESTful endpoints with advanced filtering, search, and pagination
-- **Automated Fetching**: Scheduled news fetching every hour
-- **Professional Code Quality**: Follows SOLID principles, DRY, and KISS methodologies
-- **Zero Configuration**: Works out of the box with included sample data
+- Multi-source aggregation (NewsAPI, The Guardian, New York Times)
+- Clean API with filtering, search, and pagination
+- Scheduled fetching (hourly)
+- Solid, maintainable codebase (SOLID/DRY/KISS)
+- Straightforward setup
 
 ## 🗞️ Supported News Sources
 
@@ -184,8 +184,9 @@ news-aggregator/
 ├── app/
 │   ├── Console/Commands/     # Artisan commands
 │   ├── Http/Controllers/     # API and Web controllers
-│   ├── Models/              # Eloquent models
-│   ├── Services/            # Business logic
+│   ├── Http/Resources/       # API resources (response shaping)
+│   ├── Models/               # Eloquent models
+│   ├── Services/             # Business logic
 │   └── Services/Providers/   # News source providers
 ├── database/
 │   ├── migrations/          # Database migrations
@@ -195,17 +196,18 @@ news-aggregator/
 │   ├── api.php            # API routes
 │   └── web.php            # Web routes
 ├── tests/                 # Test files
-├── docker-compose.yml     # Docker configuration
-├── Dockerfile            # Docker image
 └── setup.sh             # Setup script
 ```
 
 ## 🏗️ Architecture
 
 ### Service Layer
-- **AggregatorService**: Main service for fetching and storing articles
-- **CacheService**: Handles caching operations
-- **NewsProvider Interface**: Contract for news source implementations
+- AggregatorService: Fetches and stores articles
+- NewsProvider contract: Implemented by each provider
+
+### API Layer
+- Uses Laravel API Resources to return concise, consistent payloads
+- No response caching at the controller layer
 
 ### Providers
 - **NewsApiProvider**: Fetches from NewsAPI.org

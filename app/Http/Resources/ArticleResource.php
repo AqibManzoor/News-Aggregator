@@ -14,7 +14,7 @@ class ArticleResource extends JsonResource
             'summary' => $this->summary,
             'url' => $this->url,
             'image_url' => $this->image_url,
-            'published_at' => optional($this->published_at)->toISOString(),
+            'published_at' => optional($this->published_at)->toIso8601String(),
             'language' => $this->language,
             'source' => new SourceResource($this->whenLoaded('source')),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
