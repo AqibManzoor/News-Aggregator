@@ -367,7 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Add keyboard shortcuts
   document.addEventListener('keydown', function(e) {
-    // Ctrl/Cmd + Enter to submit form
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       const form = document.querySelector('form');
       if (form) {

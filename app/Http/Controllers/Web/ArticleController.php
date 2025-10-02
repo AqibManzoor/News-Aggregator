@@ -171,8 +171,6 @@ class ArticleController extends Controller
     {
         $params = array_filter($request->only(['q','category','from','to','page','pageSize']), fn($v) => $v !== null && $v !== '');
         $result = $aggregator->fetchAndStore($params);
-        
-        // Create professional user-friendly message
         $totalNew = $result['inserted'];
         $totalUpdated = $result['updated'];
         $totalProcessed = $totalNew + $totalUpdated;

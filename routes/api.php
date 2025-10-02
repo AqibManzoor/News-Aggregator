@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\SourceController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\FetchController;
-use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Cookie;
 
 /*
@@ -37,7 +36,7 @@ Route::get('/authors', [AuthorController::class, 'index']);
 // Fetch endpoint (no auth per challenge spec)
 Route::post('/fetch', FetchController::class);
 
-// User preferences (no auth) - simple cookie-based get/set
+// User preferences - simple cookie-based get/set
 Route::get('/preferences', function (\Illuminate\Http\Request $request) {
     $prefs = json_decode($request->cookie('article_prefs', '{}'), true) ?: [];
     return response()->json(['data' => [
