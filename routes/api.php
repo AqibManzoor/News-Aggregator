@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Cookie;
 
 // Article endpoints
 Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/stats', [ArticleController::class, 'stats']);
 Route::get('/articles/{article}', [ArticleController::class, 'show']);
 
 // Source endpoints

@@ -123,5 +123,25 @@ class ArticleController extends Controller
         return response()->json(['data' => new ArticleResource($article)]);
     }
 
+    /**
+     * Return aggregate stats for articles and related entities.
+     */
+    public function stats(): JsonResponse
+    {
+        $today = now()->startOfDay();
+        $weekStart = now()->startOfWeek();
+
+        return response()->json([
+            'data' => [
+                'total_articles' => Article::count(),
+                'articles_today' => Article::whereDate('published_at', '>=', $today)->count(),
+                'articles_this_week' => Article::whereDate('published_at', '>=', $weekStart)->count(),
+                'sources_count' => \App\Models\Source::count(),
+                'categories_count' => \App\Models\Category::count(),
+                'authors_count' => \App\Models\Author::count(),
+            ],
+        ]);
+    }
+
 
 }
